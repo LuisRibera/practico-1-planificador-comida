@@ -40,7 +40,7 @@ fun AppNavHost(
 			)
 		}
 		composable(DestinoNavegacion.PlanSemanal.ruta) {
-			PantallaPlanSemanal()
+			PantallaPlanSemanal(viewModel = viewModel)
 		}
 		composable(DestinoNavegacion.Compras.ruta) {
 			PantallaCompras()
