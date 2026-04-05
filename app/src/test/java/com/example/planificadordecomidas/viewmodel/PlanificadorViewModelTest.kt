@@ -22,12 +22,12 @@ class PlanificadorViewModelTest {
     @Test
     fun asignar_y_limpiar_dia_funciona_correctamente() {
         val viewModel = PlanificadorViewModel()
-        val receta = crearRecetaPrueba(id = "receta_2", nombre = "Pasta")
+        val receta = crearRecetaPrueba(id = 2, nombre = "Pasta")
 
         viewModel.agregarReceta(receta)
-        viewModel.asignarRecetaADia(indiceDia = 0, idReceta = "receta_2")
+        viewModel.asignarRecetaADia(indiceDia = 0, idReceta = 2)
 
-        assertEquals("receta_2", viewModel.estado.value.planSemanal[0]?.id)
+        assertEquals(2, viewModel.estado.value.planSemanal[0]?.id)
 
         viewModel.limpiarDia(0)
 
@@ -37,13 +37,13 @@ class PlanificadorViewModelTest {
     @Test
     fun eliminar_receta_tambien_limpia_su_dia_asignado() {
         val viewModel = PlanificadorViewModel()
-        val receta = crearRecetaPrueba(id = "receta_3", nombre = "Tarta")
+        val receta = crearRecetaPrueba(id = 3, nombre = "Tarta")
 
         viewModel.agregarReceta(receta)
-        viewModel.asignarRecetaADia(indiceDia = 3, idReceta = "receta_3")
-        viewModel.eliminarReceta("receta_3")
+        viewModel.asignarRecetaADia(indiceDia = 3, idReceta = 3)
+        viewModel.eliminarReceta(3)
 
-        assertTrue(viewModel.estado.value.recetas.none { it.id == "receta_3" })
+        assertTrue(viewModel.estado.value.recetas.none { it.id == 3 })
         assertNull(viewModel.estado.value.planSemanal[3])
     }
 
@@ -52,38 +52,38 @@ class PlanificadorViewModelTest {
         val viewModel = PlanificadorViewModel()
 
         val recetaA = Receta(
-            id = "receta_4",
+            id = 4,
             nombre = "Receta A",
             ingredientes = listOf(
-                Ingrediente(nombre = " Tomate ", cantidad = "2 unidades"),
-                Ingrediente(nombre = "Arroz", cantidad = "1 taza")
+                Ingrediente(nombre = " Tomate ", cantidad = 2.0, unidad = "unidades"),
+                Ingrediente(nombre = "Arroz", cantidad = 1.0, unidad = "taza")
             )
         )
         val recetaB = Receta(
-            id = "receta_5",
+            id = 5,
             nombre = "Receta B",
             ingredientes = listOf(
-                Ingrediente(nombre = "tomate", cantidad = "3 unidades")
+                Ingrediente(nombre = "tomate", cantidad = 3.0, unidad = "unidades")
             )
         )
 
         viewModel.agregarReceta(recetaA)
         viewModel.agregarReceta(recetaB)
-        viewModel.asignarRecetaADia(indiceDia = 1, idReceta = "receta_4")
-        viewModel.asignarRecetaADia(indiceDia = 2, idReceta = "receta_5")
+        viewModel.asignarRecetaADia(indiceDia = 1, idReceta = 4)
+        viewModel.asignarRecetaADia(indiceDia = 2, idReceta = 5)
 
-        val compras = viewModel.obtenerListaComprasConsolidada()
+        val compras = viewModel.estado.value.comprasConsolidadas
         val itemTomate = compras.first { it.nombre == "tomate" }
 
-        assertEquals("2 unidades + 3 unidades", itemTomate.cantidadTotal)
+        assertEquals("5.0 unidades", itemTomate.cantidadTotal)
     }
 
-    private fun crearRecetaPrueba(id: String, nombre: String): Receta {
+    private fun crearRecetaPrueba(id: Int, nombre: String): Receta {
         return Receta(
             id = id,
             nombre = nombre,
             ingredientes = listOf(
-                Ingrediente(nombre = "Ingrediente", cantidad = "1")
+                Ingrediente(nombre = "Ingrediente", cantidad = 1.0, unidad = "unidad")
             )
         )
     }
