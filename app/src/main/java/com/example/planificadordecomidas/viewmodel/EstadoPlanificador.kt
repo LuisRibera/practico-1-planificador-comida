@@ -6,5 +6,7 @@ import com.example.planificadordecomidas.modelo.Receta
 data class EstadoPlanificador(
 	val recetas: List<Receta> = emptyList(),
 	val planSemanal: List<Receta?> = List(7) { null },
-	val comprasConsolidadas: List<ItemCompra> = emptyList()
+	val comprasConsolidadas: List<ItemCompra> = emptyList(),
+	val textoBusqueda: String = "",
+	val filtroIngrediente: String = ""
 )

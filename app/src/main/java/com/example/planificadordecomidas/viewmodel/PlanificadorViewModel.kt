@@ -42,7 +42,9 @@ class PlanificadorViewModel : ViewModel() {
             ingredientes = ingredientes
         )
 
-        agregarReceta(nuevaReceta)
+        _estado.value = _estado.value.copy(
+            recetas = _estado.value.recetas + nuevaReceta
+        )
     }
 
     fun eliminarReceta(idReceta: Int) {
@@ -88,53 +90,69 @@ class PlanificadorViewModel : ViewModel() {
         )
     }
 
+    fun actualizarTextoBusqueda(texto: String) {
+        _estado.value = _estado.value.copy(
+            textoBusqueda = texto
+        )
+    }
+
+    fun actualizarFiltroIngrediente(ingrediente: String) {
+        _estado.value = _estado.value.copy(
+            filtroIngrediente = ingrediente
+        )
+    }
+
     private fun consolidarCompras(planSemanal: List<Receta?>): List<ItemCompra> {
-        val compras = mutableListOf<ItemCompra>()
+        val comprasAgrupadas = linkedMapOf<String, Pair<Double, String>>()
 
         for (receta in planSemanal) {
             if (receta == null) continue
 
             for (ingrediente in receta.ingredientes) {
                 val nombreNormalizado = ingrediente.nombre.trim().lowercase()
-                if (nombreNormalizado.isEmpty()) continue
+                val unidadNormalizada = ingrediente.unidad.trim().lowercase()
 
-                val cantidad = ingrediente.cantidad
-                val unidad = ingrediente.unidad.trim().lowercase()
-                val descripcionCantidad = "$cantidad $unidad"
-                val indiceExistente = compras.indexOfFirst { it.nombre == nombreNormalizado }
+                if (nombreNormalizado.isBlank()) continue
 
-                if (indiceExistente == -1) {
-                    compras.add(
-                        ItemCompra(
-                            nombre = nombreNormalizado,
-                            cantidadTotal = descripcionCantidad
-                        )
+                val itemExistente = comprasAgrupadas[nombreNormalizado]
+
+                if (itemExistente == null) {
+                    comprasAgrupadas[nombreNormalizado] = Pair(
+                        ingrediente.cantidad,
+                        unidadNormalizada
                     )
                 } else {
-                    val itemActual = compras[indiceExistente]
-                    val cantidadCombinada = combinarCantidades(
-                        itemActual.cantidadTotal,
-                        descripcionCantidad
-                    )
+                    val cantidadActual = itemExistente.first
+                    val unidadActual = itemExistente.second
 
-                    compras[indiceExistente] = itemActual.copy(
-                        cantidadTotal = cantidadCombinada
-                    )
+                    if (unidadActual == unidadNormalizada) {
+                        comprasAgrupadas[nombreNormalizado] = Pair(
+                            cantidadActual + ingrediente.cantidad,
+                            unidadActual
+                        )
+                    } else {
+                        comprasAgrupadas[nombreNormalizado] = Pair(
+                            cantidadActual,
+                            unidadActual
+                        )
+                    }
                 }
             }
         }
 
-        return compras.sortedBy { it.nombre }
-    }
+        return comprasAgrupadas.map { (nombre, cantidadYUnidad) ->
+            val cantidad = cantidadYUnidad.first
+            val unidad = cantidadYUnidad.second
 
-    private fun combinarCantidades(cantidadActual: String, nuevaCantidad: String): String {
-        val actual = cantidadActual.trim()
-        val nueva = nuevaCantidad.trim()
-
-        if (actual.isEmpty()) return nueva
-        if (nueva.isEmpty()) return actual
-
-        return "$actual + $nueva"
+            ItemCompra(
+                nombre = nombre,
+                cantidadTotal = if (unidad.isNotBlank()) {
+                    "$cantidad $unidad"
+                } else {
+                    "$cantidad"
+                }
+            )
+        }.sortedBy { it.nombre }
     }
 
     private fun crearRecetaPrecargada(): Receta {
@@ -146,8 +164,7 @@ class PlanificadorViewModel : ViewModel() {
                     nombre = "Lechuga",
                     cantidad = 1.0,
                     unidad = "hoja"
-                )
-                ,
+                ),
                 Ingrediente(
                     nombre = "Tomate",
                     cantidad = 2.0,

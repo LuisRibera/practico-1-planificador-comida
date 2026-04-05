@@ -5,10 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
 import com.example.planificadordecomidas.ui.componentes.BarraNavegacionInferior
 import com.example.planificadordecomidas.ui.navegacion.AppNavHost
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.planificadordecomidas.viewmodel.PlanificadorViewModel
 
 @Composable
 fun PlanificadorApp() {
 	val navController = rememberNavController()
+	val viewModel: PlanificadorViewModel = viewModel()
 
 	Scaffold(
 		bottomBar = {
@@ -17,7 +20,8 @@ fun PlanificadorApp() {
 	) { paddingInterno ->
 		AppNavHost(
 			navController = navController,
-			paddingInterno = paddingInterno
+			paddingInterno = paddingInterno,
+			viewModel = viewModel
 		)
 	}
 }

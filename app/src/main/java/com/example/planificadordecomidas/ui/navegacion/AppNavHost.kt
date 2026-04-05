@@ -12,11 +12,13 @@ import com.example.planificadordecomidas.ui.pantallas.compras.PantallaCompras
 import com.example.planificadordecomidas.ui.pantallas.crear.PantallaCrear
 import com.example.planificadordecomidas.ui.pantallas.plansemanal.PantallaPlanSemanal
 import com.example.planificadordecomidas.ui.pantallas.recetas.PantallaRecetas
+import com.example.planificadordecomidas.viewmodel.PlanificadorViewModel
 
 @Composable
 fun AppNavHost(
 	navController: NavHostController,
-	paddingInterno: PaddingValues
+	paddingInterno: PaddingValues,
+	viewModel: PlanificadorViewModel
 ) {
 	NavHost(
 		navController = navController,
@@ -26,7 +28,10 @@ fun AppNavHost(
 			.padding(paddingInterno)
 	) {
 		composable(DestinoNavegacion.Recetas.ruta) {
-			PantallaRecetas()
+			PantallaRecetas(
+				viewModel = viewModel,
+				navController = navController
+			)
 		}
 		composable(DestinoNavegacion.Crear.ruta) {
 			PantallaCrear()
