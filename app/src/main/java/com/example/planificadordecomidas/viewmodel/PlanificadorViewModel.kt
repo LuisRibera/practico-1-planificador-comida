@@ -54,11 +54,16 @@ class PlanificadorViewModel : ViewModel() {
         val planActualizado = estadoActual.planSemanal.map { recetaDelDia ->
             if (recetaDelDia?.id == idReceta) null else recetaDelDia
         }
+        val comprasActualizadas = consolidarCompras(planActualizado)
 
         _estado.value = estadoActual.copy(
             recetas = recetasActualizadas,
             planSemanal = planActualizado,
-            comprasConsolidadas = consolidarCompras(planActualizado)
+            comprasConsolidadas = comprasActualizadas,
+            itemsComprados = filtrarItemsCompradosVigentes(
+                estadoActual.itemsComprados,
+                comprasActualizadas
+            )
         )
     }
 
@@ -70,10 +75,15 @@ class PlanificadorViewModel : ViewModel() {
 
         val planActualizado = estadoActual.planSemanal.toMutableList()
         planActualizado[indiceDia] = recetaSeleccionada
+        val comprasActualizadas = consolidarCompras(planActualizado)
 
         _estado.value = estadoActual.copy(
             planSemanal = planActualizado,
-            comprasConsolidadas = consolidarCompras(planActualizado)
+            comprasConsolidadas = comprasActualizadas,
+            itemsComprados = filtrarItemsCompradosVigentes(
+                estadoActual.itemsComprados,
+                comprasActualizadas
+            )
         )
     }
 
@@ -83,11 +93,34 @@ class PlanificadorViewModel : ViewModel() {
         val estadoActual = _estado.value
         val planActualizado = estadoActual.planSemanal.toMutableList()
         planActualizado[indiceDia] = null
+        val comprasActualizadas = consolidarCompras(planActualizado)
 
         _estado.value = estadoActual.copy(
             planSemanal = planActualizado,
-            comprasConsolidadas = consolidarCompras(planActualizado)
+            comprasConsolidadas = comprasActualizadas,
+            itemsComprados = filtrarItemsCompradosVigentes(
+                estadoActual.itemsComprados,
+                comprasActualizadas
+            )
         )
+    }
+
+    fun actualizarEstadoComprado(nombreItem: String, estaComprado: Boolean) {
+        val nombreNormalizado = normalizarNombreItemCompra(nombreItem)
+        if (nombreNormalizado.isBlank()) return
+
+        val estadoActual = _estado.value
+        val existeEnCompras = estadoActual.comprasConsolidadas.any { it.nombre == nombreNormalizado }
+        if (!existeEnCompras) return
+
+        val itemsCompradosActualizados = estadoActual.itemsComprados.toMutableSet()
+        if (estaComprado) {
+            itemsCompradosActualizados.add(nombreNormalizado)
+        } else {
+            itemsCompradosActualizados.remove(nombreNormalizado)
+        }
+
+        _estado.value = estadoActual.copy(itemsComprados = itemsCompradosActualizados)
     }
 
     fun actualizarTextoBusqueda(texto: String) {
@@ -153,6 +186,21 @@ class PlanificadorViewModel : ViewModel() {
                 }
             )
         }.sortedBy { it.nombre }
+    }
+
+    private fun filtrarItemsCompradosVigentes(
+        itemsComprados: Set<String>,
+        comprasConsolidadas: List<ItemCompra>
+    ): Set<String> {
+        val nombresVigentes = comprasConsolidadas
+            .map { normalizarNombreItemCompra(it.nombre) }
+            .toSet()
+
+        return itemsComprados.filter { it in nombresVigentes }.toSet()
+    }
+
+    private fun normalizarNombreItemCompra(nombre: String): String {
+        return nombre.trim().lowercase()
     }
 
     private fun crearRecetaPrecargada(): Receta {

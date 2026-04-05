@@ -7,6 +7,7 @@ data class EstadoPlanificador(
 	val recetas: List<Receta> = emptyList(),
 	val planSemanal: List<Receta?> = List(7) { null },
 	val comprasConsolidadas: List<ItemCompra> = emptyList(),
+	val itemsComprados: Set<String> = emptySet(),
 	val textoBusqueda: String = "",
 	val filtroIngrediente: String = ""
 )
