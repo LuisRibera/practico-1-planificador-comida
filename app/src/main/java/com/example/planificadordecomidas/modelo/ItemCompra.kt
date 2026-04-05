@@ -4,4 +4,3 @@ data class ItemCompra(
 	val nombre: String,
 	val cantidadTotal: String
 )
-

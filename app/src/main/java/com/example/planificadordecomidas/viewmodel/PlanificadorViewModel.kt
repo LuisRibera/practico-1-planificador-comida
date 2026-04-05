@@ -10,9 +10,13 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class PlanificadorViewModel : ViewModel() {
 
+    private var siguienteIdReceta = 2
+
+    private val recetaInicial = crearRecetaPrecargada()
+
     private val _estado = MutableStateFlow(
         EstadoPlanificador(
-            recetas = listOf(crearRecetaPrecargada())
+            recetas = listOf(recetaInicial)
         )
     )
     val estado: StateFlow<EstadoPlanificador> = _estado.asStateFlow()
@@ -28,7 +32,20 @@ class PlanificadorViewModel : ViewModel() {
         )
     }
 
-    fun eliminarReceta(idReceta: String) {
+    fun crearYAgregarReceta(
+        nombre: String,
+        ingredientes: List<Ingrediente>
+    ) {
+        val nuevaReceta = Receta(
+            id = siguienteIdReceta++,
+            nombre = nombre,
+            ingredientes = ingredientes
+        )
+
+        agregarReceta(nuevaReceta)
+    }
+
+    fun eliminarReceta(idReceta: Int) {
         val estadoActual = _estado.value
 
         val recetasActualizadas = estadoActual.recetas.filterNot { it.id == idReceta }
@@ -43,7 +60,7 @@ class PlanificadorViewModel : ViewModel() {
         )
     }
 
-    fun asignarRecetaADia(indiceDia: Int, idReceta: String) {
+    fun asignarRecetaADia(indiceDia: Int, idReceta: Int) {
         if (indiceDia !in 0..6) return
 
         val estadoActual = _estado.value
@@ -81,24 +98,28 @@ class PlanificadorViewModel : ViewModel() {
                 val nombreNormalizado = ingrediente.nombre.trim().lowercase()
                 if (nombreNormalizado.isEmpty()) continue
 
-                val cantidadNormalizada = ingrediente.cantidad.trim()
+                val cantidad = ingrediente.cantidad
+                val unidad = ingrediente.unidad.trim().lowercase()
+                val descripcionCantidad = "$cantidad $unidad"
                 val indiceExistente = compras.indexOfFirst { it.nombre == nombreNormalizado }
 
                 if (indiceExistente == -1) {
                     compras.add(
                         ItemCompra(
                             nombre = nombreNormalizado,
-                            cantidadTotal = cantidadNormalizada
+                            cantidadTotal = descripcionCantidad
                         )
                     )
                 } else {
                     val itemActual = compras[indiceExistente]
                     val cantidadCombinada = combinarCantidades(
                         itemActual.cantidadTotal,
-                        cantidadNormalizada
+                        descripcionCantidad
                     )
 
-                    compras[indiceExistente] = itemActual.copy(cantidadTotal = cantidadCombinada)
+                    compras[indiceExistente] = itemActual.copy(
+                        cantidadTotal = cantidadCombinada
+                    )
                 }
             }
         }
@@ -118,12 +139,25 @@ class PlanificadorViewModel : ViewModel() {
 
     private fun crearRecetaPrecargada(): Receta {
         return Receta(
-            id = "receta_1",
+            id = 1,
             nombre = "Ensalada simple",
             ingredientes = listOf(
-                Ingrediente(nombre = "Lechuga", cantidad = "1 planta"),
-                Ingrediente(nombre = "Tomate", cantidad = "2 unidades"),
-                Ingrediente(nombre = "Aceite de oliva", cantidad = "2 cucharadas")
+                Ingrediente(
+                    nombre = "Lechuga",
+                    cantidad = 1.0,
+                    unidad = "hoja"
+                )
+                ,
+                Ingrediente(
+                    nombre = "Tomate",
+                    cantidad = 2.0,
+                    unidad = "unidades"
+                ),
+                Ingrediente(
+                    nombre = "Aceite de oliva",
+                    cantidad = 2.0,
+                    unidad = "cucharadas"
+                )
             )
         )
     }

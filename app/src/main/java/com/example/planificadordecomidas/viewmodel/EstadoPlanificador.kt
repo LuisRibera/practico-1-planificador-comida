@@ -8,4 +8,3 @@ data class EstadoPlanificador(
 	val planSemanal: List<Receta?> = List(7) { null },
 	val comprasConsolidadas: List<ItemCompra> = emptyList()
 )
-
