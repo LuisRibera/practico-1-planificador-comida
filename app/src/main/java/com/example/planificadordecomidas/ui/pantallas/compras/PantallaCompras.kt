@@ -43,13 +43,13 @@ fun PantallaCompras(
 					.padding(top = 12.dp),
 				verticalArrangement = Arrangement.spacedBy(8.dp)
 			) {
-				items(estado.comprasConsolidadas, key = { it.nombre }) { itemCompra ->
+				items(estado.comprasConsolidadas, key = { it.clave }) { itemCompra ->
 					ItemCompraFila(
 						itemCompra = itemCompra,
-						estaComprado = itemCompra.nombre in estado.itemsComprados,
+						estaComprado = itemCompra.clave in estado.itemsComprados,
 						alCambiarEstadoComprado = { estaComprado ->
 							viewModel.actualizarEstadoComprado(
-								nombreItem = itemCompra.nombre,
+								claveItem = itemCompra.clave,
 								estaComprado = estaComprado
 							)
 						}
