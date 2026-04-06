@@ -45,6 +45,8 @@ fun PantallaCrear(
 		null
 	}
 
+	val puedeGuardar = nombreReceta.trim().isNotEmpty() && ingredientesValidos.isNotEmpty()
+
 	Scaffold { paddingInterno ->
 		Column(
 			modifier = Modifier
@@ -76,14 +78,10 @@ fun PantallaCrear(
 				},
 				nombreError = nombreError,
 				ingredientesError = ingredientesError,
-				puedeGuardar = nombreReceta.trim().isNotEmpty() && ingredientesValidos.isNotEmpty(),
+				puedeGuardar = puedeGuardar,
 				alGuardar = {
 					mostrarErrores = true
-
-					val nombreValido = nombreReceta.trim().isNotEmpty()
-					val ingredientesSonValidos = ingredientesValidos.isNotEmpty()
-
-					if (nombreValido && ingredientesSonValidos) {
+					if (puedeGuardar) {
 						val ingredientes = ingredientesValidos.map { ingrediente ->
 							Ingrediente(
 								nombre = ingrediente.nombre.trim(),
@@ -91,12 +89,10 @@ fun PantallaCrear(
 								unidad = ingrediente.unidad.trim()
 							)
 						}
-
 						viewModel.crearYAgregarReceta(
 							nombre = nombreReceta.trim(),
 							ingredientes = ingredientes
 						)
-
 						navController.popBackStack()
 					}
 				},

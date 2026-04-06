@@ -10,4 +10,17 @@ data class EstadoPlanificador(
 	val itemsComprados: Set<String> = emptySet(),
 	val textoBusqueda: String = "",
 	val filtroIngrediente: String = ""
-)
+) {
+	val recetasFiltradas: List<Receta>
+		get() {
+			val busqueda = textoBusqueda.trim().lowercase()
+			val filtro = filtroIngrediente.trim().lowercase()
+			return recetas.filter { receta ->
+				val coincideNombre = busqueda.isBlank() ||
+						receta.nombre.lowercase().contains(busqueda)
+				val coincideIngrediente = filtro.isBlank() ||
+						receta.ingredientes.any { it.nombre.lowercase().contains(filtro) }
+				coincideNombre && coincideIngrediente
+			}
+		}
+}
