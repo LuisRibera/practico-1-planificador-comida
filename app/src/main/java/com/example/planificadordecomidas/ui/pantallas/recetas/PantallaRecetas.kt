@@ -30,23 +30,7 @@ fun PantallaRecetas(
     navController: NavHostController
 ) {
     val estado by viewModel.estado.collectAsState()
-
-    val textoBusquedaNormalizado = estado.textoBusqueda.trim().lowercase()
-    val filtroIngredienteNormalizado = estado.filtroIngrediente.trim().lowercase()
-
-    val recetasFiltradas = estado.recetas.filter { receta ->
-        val coincideNombre =
-            textoBusquedaNormalizado.isBlank() ||
-                    receta.nombre.lowercase().contains(textoBusquedaNormalizado)
-
-        val coincideIngrediente =
-            filtroIngredienteNormalizado.isBlank() ||
-                    receta.ingredientes.any { ingrediente ->
-                        ingrediente.nombre.lowercase().contains(filtroIngredienteNormalizado)
-                    }
-
-        coincideNombre && coincideIngrediente
-    }
+    val recetasFiltradas = estado.recetasFiltradas
 
     Scaffold(
         floatingActionButton = {

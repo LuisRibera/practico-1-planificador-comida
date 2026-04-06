@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.planificadordecomidas.modelo.ItemCompra
+import com.example.planificadordecomidas.ui.utilidades.formatearCantidad
 
 @Composable
 fun ItemCompraFila(
@@ -23,6 +24,11 @@ fun ItemCompraFila(
     alCambiarEstadoComprado: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val cantidadFormateada = buildString {
+        append(formatearCantidad(itemCompra.cantidad))
+        if (itemCompra.unidad.isNotBlank()) append(" ${itemCompra.unidad}")
+    }
+
     Card(
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -37,19 +43,17 @@ fun ItemCompraFila(
                 checked = estaComprado,
                 onCheckedChange = alCambiarEstadoComprado
             )
-
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = itemCompra.nombre,
+                    text = itemCompra.nombre.replaceFirstChar { it.uppercase() },
                     style = MaterialTheme.typography.titleMedium,
                     textDecoration = if (estaComprado) TextDecoration.LineThrough else TextDecoration.None
                 )
                 Text(
-                    text = itemCompra.cantidadTotal,
+                    text = cantidadFormateada,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
     }
 }
-
