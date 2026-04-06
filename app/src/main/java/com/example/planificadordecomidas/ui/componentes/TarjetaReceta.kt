@@ -8,16 +8,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.planificadordecomidas.ui.utilidades.formatearCantidad
 import com.example.planificadordecomidas.modelo.Receta
+import com.example.planificadordecomidas.ui.utilidades.formatearCantidad
 
 @Composable
 fun TarjetaReceta(
@@ -30,12 +29,8 @@ fun TarjetaReceta(
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(12.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -43,28 +38,22 @@ fun TarjetaReceta(
                 ) {
                     Text(
                         text = receta.nombre,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(modifier = Modifier.padding(4.dp))
                     Text(
                         text = "Ingredientes:",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 12.sp
+                        style = MaterialTheme.typography.labelMedium
                     )
                     receta.ingredientes.forEach { ingrediente ->
                         Text(
                             text = "• ${ingrediente.nombre}: ${formatearCantidad(ingrediente.cantidad)} ${ingrediente.unidad}",
-                            fontSize = 11.sp,
+                            style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.padding(start = 4.dp, top = 2.dp)
                         )
-                    }}
+                    }
                 }
-
-                IconButton(
-                    onClick = alEliminar,
-                    modifier = Modifier.padding(0.dp)
-                ) {
+                IconButton(onClick = alEliminar) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Eliminar receta"
@@ -73,5 +62,4 @@ fun TarjetaReceta(
             }
         }
     }
-
-
+}
