@@ -87,14 +87,13 @@ class PlanificadorViewModel : ViewModel() {
         )
     }
 
-    fun actualizarEstadoComprado(nombreItem: String, estaComprado: Boolean) {
-        val nombreNormalizado = normalizarNombre(nombreItem)
-        if (nombreNormalizado.isBlank()) return
+    fun actualizarEstadoComprado(claveItem: String, estaComprado: Boolean) {
+        if (claveItem.isBlank()) return
         val estadoActual = _estado.value
-        if (estadoActual.comprasConsolidadas.none { it.nombre == nombreNormalizado }) return
+        if (estadoActual.comprasConsolidadas.none { it.clave == claveItem }) return
         val itemsActualizados = estadoActual.itemsComprados.toMutableSet()
-        if (estaComprado) itemsActualizados.add(nombreNormalizado)
-        else itemsActualizados.remove(nombreNormalizado)
+        if (estaComprado) itemsActualizados.add(claveItem)
+        else itemsActualizados.remove(claveItem)
         _estado.value = estadoActual.copy(itemsComprados = itemsActualizados)
     }
 
@@ -130,7 +129,7 @@ class PlanificadorViewModel : ViewModel() {
         itemsComprados: Set<String>,
         comprasConsolidadas: List<ItemCompra>
     ): Set<String> {
-        val vigentes = comprasConsolidadas.map { it.nombre }.toSet()
+        val vigentes = comprasConsolidadas.map { it.clave }.toSet()
         return itemsComprados.filter { it in vigentes }.toSet()
     }
 

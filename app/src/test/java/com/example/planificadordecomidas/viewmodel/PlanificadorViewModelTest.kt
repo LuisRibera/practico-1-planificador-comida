@@ -94,12 +94,12 @@ class PlanificadorViewModelTest {
         val viewModel = PlanificadorViewModel()
         viewModel.asignarRecetaADia(indiceDia = 0, idReceta = 1)
 
-        val nombreIngrediente = "lechuga"
-        viewModel.actualizarEstadoComprado(nombreIngrediente, true)
-        assertTrue(viewModel.estado.value.itemsComprados.contains(nombreIngrediente))
+        val claveIngrediente = "lechuga_planta"
+        viewModel.actualizarEstadoComprado(claveIngrediente, true)
+        assertTrue(viewModel.estado.value.itemsComprados.contains(claveIngrediente))
 
-        viewModel.actualizarEstadoComprado(nombreIngrediente, false)
-        assertFalse(viewModel.estado.value.itemsComprados.contains(nombreIngrediente))
+        viewModel.actualizarEstadoComprado(claveIngrediente, false)
+        assertFalse(viewModel.estado.value.itemsComprados.contains(claveIngrediente))
     }
 
     @Test
@@ -115,7 +115,7 @@ class PlanificadorViewModelTest {
     fun eliminar_receta_limpia_items_comprados_relacionados() {
         val viewModel = PlanificadorViewModel()
         viewModel.asignarRecetaADia(indiceDia = 0, idReceta = 1)
-        viewModel.actualizarEstadoComprado("lechuga", true)
+        viewModel.actualizarEstadoComprado("lechuga_planta", true)
 
         viewModel.eliminarReceta(1)
 
