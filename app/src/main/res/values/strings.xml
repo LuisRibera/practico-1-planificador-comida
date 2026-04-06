@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Planificador de comidas</string>
+    <string-array name="nombres_dias">
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miércoles</item>
+        <item>Jueves</item>
+        <item>Viernes</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+    </string-array>
 </resources>

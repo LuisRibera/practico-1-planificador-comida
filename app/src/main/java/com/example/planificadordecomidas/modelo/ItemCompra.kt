@@ -1,6 +1,7 @@
 package com.example.planificadordecomidas.modelo
 
 data class ItemCompra(
-	val nombre: String,
-	val cantidadTotal: String
+    val nombre: String,
+    val cantidad: Double,
+    val unidad: String
 )
