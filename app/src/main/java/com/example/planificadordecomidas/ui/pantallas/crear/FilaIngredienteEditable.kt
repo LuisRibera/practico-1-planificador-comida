@@ -51,7 +51,7 @@ fun FilaIngredienteEditable(
             onValueChange = { nuevoValor ->
                 alCambiar(ingrediente.copy(unidad = nuevoValor))
             },
-            label = { Text("Unidad") },
+            label = { Text("Unidad de medida") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),

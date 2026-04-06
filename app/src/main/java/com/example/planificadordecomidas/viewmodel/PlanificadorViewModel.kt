@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.planificadordecomidas.modelo.Ingrediente
 import com.example.planificadordecomidas.modelo.ItemCompra
 import com.example.planificadordecomidas.modelo.Receta
+import com.example.planificadordecomidas.ui.utilidades.formatearCantidad
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -136,7 +137,7 @@ class PlanificadorViewModel : ViewModel() {
     }
 
     private fun consolidarCompras(planSemanal: List<Receta?>): List<ItemCompra> {
-        val comprasAgrupadas = linkedMapOf<String, Pair<Double, String>>()
+        val comprasAgrupadas = linkedMapOf<Pair<String, String>, Double>()
 
         for (receta in planSemanal) {
             if (receta == null) continue
@@ -147,42 +148,22 @@ class PlanificadorViewModel : ViewModel() {
 
                 if (nombreNormalizado.isBlank()) continue
 
-                val itemExistente = comprasAgrupadas[nombreNormalizado]
-
-                if (itemExistente == null) {
-                    comprasAgrupadas[nombreNormalizado] = Pair(
-                        ingrediente.cantidad,
-                        unidadNormalizada
-                    )
-                } else {
-                    val cantidadActual = itemExistente.first
-                    val unidadActual = itemExistente.second
-
-                    if (unidadActual == unidadNormalizada) {
-                        comprasAgrupadas[nombreNormalizado] = Pair(
-                            cantidadActual + ingrediente.cantidad,
-                            unidadActual
-                        )
-                    } else {
-                        comprasAgrupadas[nombreNormalizado] = Pair(
-                            cantidadActual,
-                            unidadActual
-                        )
-                    }
-                }
+                val clave = Pair(nombreNormalizado, unidadNormalizada)
+                val cantidadActual = comprasAgrupadas[clave] ?: 0.0
+                comprasAgrupadas[clave] = cantidadActual + ingrediente.cantidad
             }
         }
 
-        return comprasAgrupadas.map { (nombre, cantidadYUnidad) ->
-            val cantidad = cantidadYUnidad.first
-            val unidad = cantidadYUnidad.second
+        return comprasAgrupadas.map { (clave, cantidadTotal) ->
+            val nombre = clave.first
+            val unidad = clave.second
 
             ItemCompra(
                 nombre = nombre,
                 cantidadTotal = if (unidad.isNotBlank()) {
-                    "$cantidad $unidad"
+                    "${formatearCantidad(cantidadTotal)} $unidad"
                 } else {
-                    "$cantidad"
+                    formatearCantidad(cantidadTotal)
                 }
             )
         }.sortedBy { it.nombre }

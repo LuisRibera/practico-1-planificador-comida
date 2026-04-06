@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.planificadordecomidas.ui.utilidades.formatearCantidad
 import com.example.planificadordecomidas.modelo.Receta
 
 @Composable
@@ -53,11 +54,11 @@ fun TarjetaReceta(
                     )
                     receta.ingredientes.forEach { ingrediente ->
                         Text(
-                            text = "• ${ingrediente.nombre}: ${ingrediente.cantidad} ${ingrediente.unidad}",
+                            text = "• ${ingrediente.nombre}: ${formatearCantidad(ingrediente.cantidad)} ${ingrediente.unidad}",
                             fontSize = 11.sp,
                             modifier = Modifier.padding(start = 4.dp, top = 2.dp)
                         )
-                    }
+                    }}
                 }
 
                 IconButton(
@@ -72,5 +73,5 @@ fun TarjetaReceta(
             }
         }
     }
-}
+
 
