@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class PlanificadorViewModel : ViewModel() {
 
     private val _estado = MutableStateFlow(
-        EstadoPlanificador(recetas = listOf(crearRecetaPrecargada()))
+        EstadoPlanificador(recetas = recetasPrecargadas())
     )
     val estado: StateFlow<EstadoPlanificador> = _estado.asStateFlow()
 
@@ -136,15 +136,83 @@ class PlanificadorViewModel : ViewModel() {
 
     private fun normalizarNombre(nombre: String): String = nombre.trim().lowercase()
 
-    private fun crearRecetaPrecargada(): Receta {
-        return Receta(
+    private fun recetasPrecargadas(): List<Receta> = listOf(
+        Receta(
             id = 1,
             nombre = "Ensalada simple",
             ingredientes = listOf(
-                Ingrediente(nombre = "Lechuga", cantidad = 1.0, unidad = "hoja"),
-                Ingrediente(nombre = "Tomate", cantidad = 2.0, unidad = "unidades"),
-                Ingrediente(nombre = "Aceite de oliva", cantidad = 2.0, unidad = "cucharadas")
+                Ingrediente("Lechuga", 1.0, "planta"),
+                Ingrediente("Tomate", 2.0, "unidades"),
+                Ingrediente("Aceite de oliva", 2.0, "cucharadas")
+            )
+        ),
+        Receta(
+            id = 2,
+            nombre = "Pasta con tomate",
+            ingredientes = listOf(
+                Ingrediente("Pasta", 200.0, "gramos"),
+                Ingrediente("Tomate triturado", 1.0, "lata"),
+                Ingrediente("Ajo", 2.0, "dientes"),
+                Ingrediente("Aceite de oliva", 2.0, "cucharadas"),
+                Ingrediente("Sal", 1.0, "pizca")
+            )
+        ),
+        Receta(
+            id = 3,
+            nombre = "Arroz con pollo",
+            ingredientes = listOf(
+                Ingrediente("Arroz", 1.0, "taza"),
+                Ingrediente("Pechuga de pollo", 300.0, "gramos"),
+                Ingrediente("Caldo de pollo", 2.0, "tazas"),
+                Ingrediente("Cebolla", 1.0, "unidad"),
+                Ingrediente("Pimiento rojo", 1.0, "unidad"),
+                Ingrediente("Sal", 1.0, "pizca")
+            )
+        ),
+        Receta(
+            id = 4,
+            nombre = "Tortilla de huevos",
+            ingredientes = listOf(
+                Ingrediente("Huevos", 3.0, "unidades"),
+                Ingrediente("Papa", 2.0, "unidades"),
+                Ingrediente("Cebolla", 0.5, "unidad"),
+                Ingrediente("Aceite", 3.0, "cucharadas"),
+                Ingrediente("Sal", 1.0, "pizca")
+            )
+        ),
+        Receta(
+            id = 5,
+            nombre = "Sopa de verduras",
+            ingredientes = listOf(
+                Ingrediente("Zanahoria", 2.0, "unidades"),
+                Ingrediente("Papa", 2.0, "unidades"),
+                Ingrediente("Apio", 2.0, "ramas"),
+                Ingrediente("Cebolla", 1.0, "unidad"),
+                Ingrediente("Caldo de verduras", 1.0, "litro"),
+                Ingrediente("Sal", 1.0, "pizca")
+            )
+        ),
+        Receta(
+            id = 6,
+            nombre = "Sandwich de pollo",
+            ingredientes = listOf(
+                Ingrediente("Pan de molde", 2.0, "rebanadas"),
+                Ingrediente("Pechuga de pollo", 150.0, "gramos"),
+                Ingrediente("Lechuga", 2.0, "hojas"),
+                Ingrediente("Tomate", 1.0, "unidad"),
+                Ingrediente("Mayonesa", 1.0, "cucharada")
+            )
+        ),
+        Receta(
+            id = 7,
+            nombre = "Avena con frutas",
+            ingredientes = listOf(
+                Ingrediente("Avena", 1.0, "taza"),
+                Ingrediente("Leche", 2.0, "tazas"),
+                Ingrediente("Banana", 1.0, "unidad"),
+                Ingrediente("Miel", 1.0, "cucharada"),
+                Ingrediente("Canela", 0.5, "cucharadita")
             )
         )
-    }
+    )
 }
